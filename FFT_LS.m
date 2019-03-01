@@ -12,7 +12,7 @@ t = 1/fs:1/fs:2;
 N = length(t);
 sig = sin(2*pi*(20*t'.^2 + 10*t'));
 %% 制造缺失区间
-jump_op = 309; % [可调] 
+jump_op = 320; % [可调] 
 jimp_ed = 321; % [可调] 
 t_ls = t([1:jump_op,jimp_ed:end]);
 sig_ls = sig([1:jump_op,jimp_ed:end]);
@@ -40,7 +40,7 @@ theta1 = pinv(phi'*phi)*phi'*sig_ls;
 theta2 = phi\sig_ls;
 theta3 = phi'*sig_ls;
 %% 重构信号
-resample_rete = 10; % [可调] 
+resample_rete = 2; % [可调] 
 t_full = min(t):1/fs/resample_rete:max(t);
 freq_range_re = [fs/N/resample_rete:fs/N/resample_rete:fs/2/resample_rete];
 phi = zeros(length(freq_vector)*2+1, length(t_full));
