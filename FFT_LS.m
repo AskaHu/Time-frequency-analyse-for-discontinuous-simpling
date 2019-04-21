@@ -12,8 +12,10 @@ t = 1/fs:1/fs:2;
 N = length(t);
 sig = sin(2*pi*(20*t'.^2 + 10*t'));
 %% 制造缺失区间
+
 jump_op = 301; % [可调] 
 jimp_ed = 321; % [可调] 
+
 t_ls = t([1:jump_op,jimp_ed:end]);
 sig_ls = sig([1:jump_op,jimp_ed:end]);
 N_ls = length(t_ls);
@@ -35,6 +37,11 @@ end
 temp1 = phi'*phi;
 base1 = temp1*phi';
 base2 = pinv(temp1)*phi';
+%%
+plot(base1([1,2,3:4],:)','DisplayName','base2([1,3,5:6],:)')
+figure;
+plot(base2([1,2,3:4],:)','DisplayName','base2([1,3,5:6],:)')
+%%
 base3 = diag(ones(1,length(t)+1))*phi';
 theta1 = pinv(phi'*phi)*phi'*sig_ls; 
 theta2 = phi\sig_ls;
@@ -69,24 +76,30 @@ ft = ft/max(ft);
 L1 = L1/max(L1);
 L2 = L2/max(L2);
 L3 = L3/max(L3);
-figure,plot(L1),hold on
-plot(L2),hold on
-plot(L3),hold on
+figure(1),plot(L1),hold on
 plot(ft(length(ft)/2+2:length(ft))),hold off
-legend('方法1求逆pinv','方法2左除','方法3转置', 'FFT未缺失')
+legend('方法1求逆pinv')
 % 方法1求逆pinv 方法3转置效果相同
+figure,plot(L2),hold on
+plot(ft(length(ft)/2+2:length(ft))),hold off
+legend('方法2左除')
 
+figure,plot(L3),hold on
+plot(ft(length(ft)/2+2:length(ft))),hold off
+legend('方法3转置')
 %% 拟合结果对比
 % 插值拟合
 sig_fit=interp1(t_ls,sig_ls,t,'spline');
 fft_fit = abs(fftshift(fft(sig_fit)));
 fft_fit = fft_fit/max(fft_fit);
+
 figure,plot(L1),hold on
+
 plot(fft_fit(length(fft_fit)/2+2:length(fft_fit))),hold on
 plot(ft(length(ft)/2+2:length(ft))),hold off
 legend('方法3转置', 'FFT Fit','FFT未缺失')
 %% 重构信号与原信号时域对比
-figure,plot(t_full, sig_re1),hold on
+figure(3);plot(t_full, sig_re1),hold on
 plot(t, sig_fit),hold on
 plot(t,sig,'g.')
 plot(t_ls,sig_ls,'r.'),hold off
