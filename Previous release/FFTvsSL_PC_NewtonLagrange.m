@@ -28,8 +28,11 @@ mk = 0;
 tic
 while k<round_max
     z(:,k) = [x; miu];
-    Hesse = [[2*AtA-2*miu*eye(x_len), -2*x];[-2*x', 0]];
-    dL = [2*AtA*x-2*Aty-2*miu*x;-norm(x)+norm_y];
+    if k>2
+        a(:,k-1) = z(:,k) - z(:,k-1);
+    end
+    Hesse = [[2*AtA*miu-2*eye(x_len), 2*AtA*x-2*Aty];[(2*AtA*x-2*Aty)', 0]];
+    dL = [2*AtA*x*miu-2*Aty*miu-2*x;norm(A*x-y)];
     p(:,k) = Hesse\(-dL);
     
     % Amijio check
@@ -39,7 +42,7 @@ while k<round_max
     miu_add = p(x_len+1:end,k);
     
     while m<=100000
-        if norm([2*AtA*(x+x_add*rho.^m)-2*Aty-2*(miu+miu_add*rho.^m)*(x+x_add*rho.^m);...
+        if norm([2*AtA*(x+x_add*rho.^m)*(miu+miu_add*rho.^m)-2*Aty*(miu+miu_add*rho.^m)-2*(x+x_add*rho.^m);...
                 -norm(x+x_add*rho.^m)+norm_y]) < sqrt(1-gamma*rho^m)*norm(dL)
             mk = m;
             break

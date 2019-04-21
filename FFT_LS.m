@@ -12,7 +12,7 @@ t = 1/fs:1/fs:2;
 N = length(t);
 sig = sin(2*pi*(20*t'.^2 + 10*t'));
 %% 制造缺失区间
-jump_op = 320; % [可调] 
+jump_op = 301; % [可调] 
 jimp_ed = 321; % [可调] 
 t_ls = t([1:jump_op,jimp_ed:end]);
 sig_ls = sig([1:jump_op,jimp_ed:end]);
@@ -40,7 +40,7 @@ theta1 = pinv(phi'*phi)*phi'*sig_ls;
 theta2 = phi\sig_ls;
 theta3 = phi'*sig_ls;
 %% 重构信号
-resample_rete = 2; % [可调] 
+resample_rete = 10; % [可调] 
 t_full = min(t):1/fs/resample_rete:max(t);
 freq_range_re = [fs/N/resample_rete:fs/N/resample_rete:fs/2/resample_rete];
 phi = zeros(length(freq_vector)*2+1, length(t_full));
@@ -81,8 +81,7 @@ legend('方法1求逆pinv','方法2左除','方法3转置', 'FFT未缺失')
 sig_fit=interp1(t_ls,sig_ls,t,'spline');
 fft_fit = abs(fftshift(fft(sig_fit)));
 fft_fit = fft_fit/max(fft_fit);
-
-plot(L1),hold on
+figure,plot(L1),hold on
 plot(fft_fit(length(fft_fit)/2+2:length(fft_fit))),hold on
 plot(ft(length(ft)/2+2:length(ft))),hold off
 legend('方法3转置', 'FFT Fit','FFT未缺失')

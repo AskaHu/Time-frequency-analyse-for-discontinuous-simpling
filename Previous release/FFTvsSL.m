@@ -36,9 +36,9 @@ continue_rate = 4/4; % [可调]
 %% 添加约束
 do_ParsevalConstraint = 1;
 do_blast = 0;
-do_NewtonLagrange = 0;
-do_SQP = 1;
-param_y_div_x = 1;
+do_NewtonLagrange = 1;
+do_SQP = 0;
+param_y_div_x = 2;
 %% 无约束最小二乘数值解
 freq_vector = freq_range(1:floor(length(freq_range)*continue_rate));
 phi_mat = zeros(N_ls, length(freq_vector)*2+1);
@@ -47,7 +47,7 @@ for iii = 1:length(freq_vector)
     phi_mat(:,2*iii-1) = sin(2*pi*freq_vector(iii)*t_ls);
     phi_mat(:,2*iii)  = cos(2*pi*freq_vector(iii)*t_ls);
 end
-LS_temp = phi_mat\h_ls;
+LS_temp = pinv(phi_mat)*h_ls;
 
 
 %% 有约束迭代方法
@@ -63,8 +63,8 @@ if do_ParsevalConstraint == 1
         FFTvsSL_PC_blast;
     elseif do_NewtonLagrange == 1
         FFTvsSL_PC_NewtonLagrange;
-    elseif do_SQP == 1;
-        FFTvsSL_PC_SQP;
+    elseif do_SQP == 1
+        Copy_of_FFTvsSL_PC_SQP;
     end
 end
 
